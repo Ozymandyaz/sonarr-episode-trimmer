@@ -63,9 +63,9 @@ the run-trimmer.sh file can be called by Sonarr and must point to a config file 
 == File Setup
 . Create a folder named "CustomScripts" in the SOnarr Config folder
 . add the files:
-** *sonarr-episode-trimmer.py
-** *run-trimmer.sh
-** *config.ini (you must create, NOT included)
+** *sonarr-episode-trimmer.py*
+** *run-trimmer.sh*
+** *config.ini (you must create, NOT included)*
 . make run-trimmer executiable: chmod +x run-trimmer.sh 
 
 
@@ -83,6 +83,5 @@ image:docs/images/bash-script.png[sonarr custom script,550]
 ** *On Upgrade*: No
 ** *On Rename*: No
 ** *Path*: use the absolute path to the bash script
-** *Arguments*: `--config /absolute/path/to/config/file --custom-script`
 . Click the *Test* button. *NOTE*: This will not run the script, just verify that sonarr can find the script.
 . Click *Save*
