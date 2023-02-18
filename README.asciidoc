@@ -57,18 +57,32 @@ optional arguments:
 The easiest way to use the script is to set it up as a custom script inside sonarr. This method will run the script
 anytime sonarr processes a new episode.
 
+However, Sonarr will not call a Python file directly, so you need to use a Bash script to call the Pythin scxript. 
+the run-trimmer.sh file can be called by Sonarr and must point to a config file and the Python script.
+
+== File Setup
+. Create a folder named "CustomScripts" in the SOnarr Config folder
+. add the files:
+** *sonarr-episode-trimmer.py
+** *run-trimmer.sh
+** *config.ini (you must create, NOT included)
+. make run-trimmer executiable: chmod +x run-trimmer.sh 
+
+
+
+== Sonarr Setup 
 . Go to the settings page
 . Click on the *Connect* tab
 . Hit the *+* sign
 . Choose *Custom Script*
 . Fill in the settings +
-image:docs/images/sonarr_custom_script.png[sonarr custom script,550]
+image:docs/images/bash-script.png[sonarr custom script,550]
 ** *Name*: sonarr-episode-trimmer
 ** *On Grab*: No
 ** *On Download*: Yes
 ** *On Upgrade*: No
 ** *On Rename*: No
-** *Path*: use the absolute path to the script
+** *Path*: use the absolute path to the bash script
 ** *Arguments*: `--config /absolute/path/to/config/file --custom-script`
 . Click the *Test* button. *NOTE*: This will not run the script, just verify that sonarr can find the script.
 . Click *Save*
