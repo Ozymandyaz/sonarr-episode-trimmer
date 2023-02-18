@@ -1,4 +1,8 @@
-= Sonarr Episode Trimmer
+= Sonarr Episode Trimmer for Python 3
+
+Fork from https://nira.com/how-to-migrate-from-gitlab-to-github/
+Updated to work with Pyton 3
+
 
 A script for use with Sonarr that allows you to set the number of episodes of a show that you would like to keep.
 Useful for shows that air daily.
