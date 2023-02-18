@@ -1,12 +1,12 @@
 #!/usr/bin/python
 from operator import itemgetter
 import urllib
-import httplib
+import http.client
 import json
 import logging
 import logging.handlers
 import os
-import ConfigParser
+import configparser
 import argparse
 import sys
 
@@ -32,9 +32,9 @@ def api_request(action, params=None, method='GET', body=None):
     params['apikey'] = CONFIG.get('API', 'key')
 
     url_base = CONFIG.get('API', 'url_base') if CONFIG.has_option('API', 'url_base') else ''
-    url = "%s/api/%s?%s" % (url_base, action, urllib.urlencode(params))
+    url = "%s/api/%s?%s" % (url_base, action, urllib.parse.urlencode(params))
 
-    conn = httplib.HTTPConnection(CONFIG.get('API', 'url'))
+    conn = http.client.HTTPConnection(CONFIG.get('API', 'url'))
     conn.request(method, url, body)
     resp = conn.getresponse()
 
@@ -84,7 +84,7 @@ def clean_series(series_id, keep_episodes):
             for episode in monitored_episodes[:monitored_episodes.index(episodes[0])]:
                 unmonitor_episode(episode)
         except ValueError:
-            logging.warn("There is an episode with a file that is unmonitored")
+            logging.warning("There is an episode with a file that is unmonitored")
 
     # process episodes
     for episode in episodes[:-keep_episodes]:
@@ -125,7 +125,7 @@ if __name__ == '__main__':
         logging.getLogger().setLevel(logging.DEBUG)
 
     # load config file
-    CONFIG = ConfigParser.SafeConfigParser()
+    CONFIG = configparser.ConfigParser()
     CONFIG.read(args.config)
 
     # get all the series in the library
@@ -135,7 +135,7 @@ if __name__ == '__main__':
     if args.list_series:
         series = sorted(series, key=itemgetter('title'))
         for s in series:
-            print "%s: %s" % (s['title'], s['cleanTitle'])
+            print( "%s: %s" % (s['title'], s['cleanTitle']))
     # cleanup series
     else:
         cleanup_series = []
