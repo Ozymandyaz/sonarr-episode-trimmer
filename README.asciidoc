@@ -69,7 +69,6 @@ the run-trimmer.sh file can be called by Sonarr and must point to a config file 
 . make run-trimmer executiable: chmod +x run-trimmer.sh 
 
 
-
 == Sonarr Setup 
 . Go to the settings page
 . Click on the *Connect* tab
@@ -85,3 +84,12 @@ image:docs/images/bash-script.png[sonarr custom script,550]
 ** *Path*: use the absolute path to the bash script
 . Click the *Test* button. *NOTE*: This will not run the script, just verify that sonarr can find the script.
 . Click *Save*
+
+
+== LinuxServer.io Custom COntent for Python
+https://www.linuxserver.io/blog/2019-09-14-customizing-our-containers
+. If using a LSIO docker container, you may need ot add Python
+. Make a folder where Docker has read access namesd custom-cont-init.d 
+. Add a volume reference to the Docer config for SOnar to map ot:
+** -v /home/foo/appdata/my-custom-files:/custom-cont-init.d
+** Add a bash script to install python3-minimal (python.sh is included)
