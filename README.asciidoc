@@ -87,9 +87,10 @@ image:docs/images/bash-script.png[sonarr custom script,550]
 
 
 == LinuxServer.io Custom COntent for Python
-https://www.linuxserver.io/blog/2019-09-14-customizing-our-containers
+. https://www.linuxserver.io/blog/2019-09-14-customizing-our-containers
 . If using a LSIO docker container, you may need ot add Python
 . Make a folder where Docker has read access namesd custom-cont-init.d 
 . Add a volume reference to the Docer config for SOnar to map ot:
 ** -v /home/foo/appdata/my-custom-files:/custom-cont-init.d
 ** Add a bash script to install python3-minimal (python.sh is included)
+
