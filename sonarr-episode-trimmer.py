@@ -32,7 +32,7 @@ def api_request(action, params=None, method='GET', body=None):
     params['apikey'] = CONFIG.get('API', 'key')
 
     url_base = CONFIG.get('API', 'url_base') if CONFIG.has_option('API', 'url_base') else ''
-    url = "%s/api/%s?%s" % (url_base, action, urllib.parse.urlencode(params))
+    url = "%s/api/v3/%s?%s" % (url_base, action, urllib.parse.urlencode(params))
 
     conn = http.client.HTTPConnection(CONFIG.get('API', 'url'))
     conn.request(method, url, body)
