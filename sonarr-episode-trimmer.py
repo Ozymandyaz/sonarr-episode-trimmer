@@ -39,12 +39,17 @@ def api_request(action, params=None, method='GET', body=None):
     resp = conn.getresponse()
 
     resp_body = resp.read()
+    if resp_body is None:
+        resp_body = '{"Message": "none"}'
 
     if resp.status < 200 or resp.status > 299:
         logging.error('%s %s', resp.status, resp.reason)
         logging.error(resp_body)
 
-    return json.loads(resp_body)
+    try: 
+        return json.loads(resp_body)
+    except ValueError as e:
+        return ""
 
 
 def unmonitor_episode(episode):
@@ -54,7 +59,7 @@ def unmonitor_episode(episode):
 
     if not DEBUG:
         episode['monitored'] = False
-        api_request('episode', method='PUT', body=json.dumps(episode))
+        api_request('episode', method='PUT', body='ContentType: application/json' + json.dumps(episode))
 
 
 # remove old episodes from a series
