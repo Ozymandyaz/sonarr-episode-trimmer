@@ -61,7 +61,7 @@ However, Sonarr will not call a Python file directly, so you need to use a Bash 
 the run-trimmer.sh file can be called by Sonarr and must point to a config file and the Python script.
 
 == File Setup
-. Create a folder named "CustomScripts" in the SOnarr Config folder
+. Create a folder named "CustomScripts" in the Sonarr Config folder
 . add the files:
 ** *sonarr-episode-trimmer.py*
 ** *run-trimmer.sh*
@@ -90,7 +90,7 @@ image:docs/images/bash-script.png[sonarr custom script,550]
 . https://www.linuxserver.io/blog/2019-09-14-customizing-our-containers
 . If using a LSIO docker container, you may need ot add Python
 . Make a folder where Docker has read access namesd custom-cont-init.d 
-. Add a volume reference to the Docer config for SOnar to map ot:
+. Add a volume reference to the Docer config for Sonarr to map to:
 ** -v /home/foo/appdata/my-custom-files:/custom-cont-init.d
 ** Add a bash script to install python3-minimal (python.sh is included)
 
