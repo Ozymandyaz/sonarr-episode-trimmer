@@ -60,6 +60,7 @@ def unmonitor_episode(episode):
     if not DEBUG:
         episode['monitored'] = False
         api_request('episode', method='PUT', body='ContentType: application/json' + json.dumps(episode))
+        logging.info('episode', method='PUT', body='ContentType: application/json' + json.dumps(episode))
 
 
 # remove old episodes from a series
