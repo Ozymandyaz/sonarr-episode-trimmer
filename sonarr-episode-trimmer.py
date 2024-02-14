@@ -1,5 +1,6 @@
 #!/usr/bin/python
 from operator import itemgetter
+import requests
 import urllib
 import http.client
 import json
@@ -23,44 +24,64 @@ file_handler = logging.handlers.TimedRotatingFileHandler(log_file, when='D', int
 file_handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)-8s %(message)s'))
 logging.getLogger().addHandler(file_handler)
 
+httpclient_logger = logging.getLogger("http.client")
+
+# def httpclient_logging_patch(level=logging.DEBUG):
+#     """Enable HTTPConnection debug logging to the logging framework"""
+
+#     def httpclient_log(*args):
+#         httpclient_logger.log(level, " ".join(args))
+
+#     # mask the print() built-in in the http.client module to use
+#     # logging instead
+#     http.client.print = httpclient_log
+#     # enable debugging
+#     http.client.HTTPConnection.debuglevel = 1
+
+# httpclient_logging_patch()
+
+def unmonitor_episode(episode):
+    if not DEBUG:
+        jsonBody = {"EpisodeIds": [episode['id']], "monitored" : False}
+        api_request('episode/monitor' , method='PUT', body=jsonBody)
 
 # make a request to the sonarr api
 def api_request(action, params=None, method='GET', body=None):
+    
     if params is None:
         params = {}
 
     params['apikey'] = CONFIG.get('API', 'key')
 
     url_base = CONFIG.get('API', 'url_base') if CONFIG.has_option('API', 'url_base') else ''
-    url = "%s/api/v3/%s?%s" % (url_base, action, urllib.parse.urlencode(params))
+ 
+    url = "http://%s%s/api/v3/%s?%s" % (CONFIG.get('API', 'url'), url_base, action, urllib.parse.urlencode(params))
 
-    conn = http.client.HTTPConnection(CONFIG.get('API', 'url'))
-    conn.request(method, url, body)
-    resp = conn.getresponse()
+    if method == 'PUT':
+        resp=requests.put(url=url, params=params, json=body)
 
-    resp_body = resp.read()
+    elif method == 'DELETE':
+        resp=requests.delete(url)
+
+    else:
+        resp=requests.get(url, params)
+
+    resp_body = resp.text
     if resp_body is None:
         resp_body = '{"Message": "none"}'
 
-    if resp.status < 200 or resp.status > 299:
-        logging.error('%s %s', resp.status, resp.reason)
+    if resp.status_code < 200 or resp.status_code > 299:
+        logging.error('%s %s', resp.status_code, resp.reason)
         logging.error(resp_body)
 
-    try: 
-        return json.loads(resp_body)
-    except ValueError as e:
+    if resp_body is None:
         return ""
 
-
-def unmonitor_episode(episode):
-    air_date = episode['airDate'] if 'airDate' in episode else ''
-    logging.info("Unmonitoring episode: season=%s, episode=%s, airdate=%s", episode['seasonNumber'],
-                 episode['episodeNumber'], air_date)
-
-    if not DEBUG:
-        episode['monitored'] = False
-        api_request('episode', method='PUT', body='ContentType: application/json' + json.dumps(episode))
-
+    else:    
+        try: 
+            return json.loads(resp_body)
+        except ValueError as e:
+            return ""
 
 # remove old episodes from a series
 def clean_series(series_id, keep_episodes):
@@ -88,6 +109,7 @@ def clean_series(series_id, keep_episodes):
         try:
             for episode in monitored_episodes[:monitored_episodes.index(episodes[0])]:
                 unmonitor_episode(episode)
+
         except ValueError:
             logging.warning("There is an episode with a file that is unmonitored")
 
@@ -102,6 +124,9 @@ def clean_series(series_id, keep_episodes):
         logging.info("Deleting file: %s", episode_file['path'])
         if not DEBUG:
             api_request('episodefile/%s' % episode_file['id'], method='DELETE')
+
+        #Unmonitor episode
+        logging.info("Unmonitor file: %s", episode_file['path'])
 
         # mark the episode as unmonitored
         unmonitor_episode(episode)
